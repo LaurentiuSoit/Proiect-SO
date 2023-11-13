@@ -1,0 +1,99 @@
+nume fisier : image.bmp
+inaltime : 83886080
+latime : 125829120
+dimensiune : 7372938
+identificatorul utilizatorului : 0
+timpul ultimei modificari : Mon Nov 06 16:40:23 2023
+
+contorul de legaturi : 1
+drepturi de acces user : ---
+drepturi de acces grup : ---
+drepturi de acces altii : ---
+nume fisier : imagine_1.bmp
+inaltime : 30605312
+latime : 30605312
+dimensiune : 219634
+identificatorul utilizatorului : 0
+timpul ultimei modificari : Mon Nov 13 16:17:29 2023
+
+contorul de legaturi : 1
+drepturi de acces user : ---
+drepturi de acces grup : ---
+drepturi de acces altii : ---
+nume fisier : imagine_2.bmp
+inaltime : 27918336
+latime : 41943040
+dimensiune : 818058
+identificatorul utilizatorului : 0
+timpul ultimei modificari : Mon Nov 13 16:17:31 2023
+
+contorul de legaturi : 1
+drepturi de acces user : ---
+drepturi de acces grup : ---
+drepturi de acces altii : ---
+nume fisier : imagine_3.bmp
+inaltime : 16777216
+latime : 16777216
+dimensiune : 196666
+identificatorul utilizatorului : 0
+timpul ultimei modificari : Mon Nov 13 16:17:33 2023
+
+contorul de legaturi : 1
+drepturi de acces user : ---
+drepturi de acces grup : ---
+drepturi de acces altii : ---
+nume fisier : imagine_4.bmp
+inaltime : 85786624
+latime : 49938432
+dimensiune : 2995046
+identificatorul utilizatorului : 0
+timpul ultimei modificari : Mon Nov 13 16:17:27 2023
+
+contorul de legaturi : 1
+drepturi de acces user : ---
+drepturi de acces grup : ---
+drepturi de acces altii : ---
+nume fisier : proiect
+dimensiune : 20248
+identificatorul utilizatorului : 0
+timpul ultimei modificari : Mon Nov 13 16:04:10 2023
+
+contorul de legaturi : 1
+drepturi de acces user : ---
+drepturi de acces grup : ---
+drepturi de acces altii : ---
+
+
+nume fisier : proiect.c
+dimensiune : 4063
+identificatorul utilizatorului : 0
+timpul ultimei modificari : Mon Nov 06 16:21:26 2023
+
+contorul de legaturi : 1
+drepturi de acces user : ---
+drepturi de acces grup : ---
+drepturi de acces altii : ---
+
+
+nume fisier : proiect.exe
+dimensiune : 283799
+identificatorul utilizatorului : 0
+timpul ultimei modificari : Mon Nov 13 14:23:18 2023
+
+contorul de legaturi : 1
+drepturi de acces user : ---
+drepturi de acces grup : ---
+drepturi de acces altii : ---
+
+
+nume fisier : README.md
+dimensiune : 12
+identificatorul utilizatorului : 0
+timpul ultimei modificari : Sun Nov 12 18:14:26 2023
+
+contorul de legaturi : 1
+drepturi de acces user : ---
+drepturi de acces grup : ---
+drepturi de acces altii : ---
+
+

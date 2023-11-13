@@ -5,65 +5,58 @@
 #include <time.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <string.h>
+#include <unistd.h>
 
-// void citire_director(char *director){
-//     DIR *dir;
-//     dir = opendir(director);
-//     struct dirent *entry;
-//     struct stat st_file;
-//     char str[500];
-
-//     while(entry = readdir(dir) != NULL)
-//     {
-//         printf("%s", entry->d_name);
-//         sprintf(str, "%s/%s", director, entry->d_name);
-//         stat(str, &st_file);
-//     }
-// }
-
-int main(int argc, char *argv[])
+char* extensie_fisier(char *filename) 
 {
-    if(argc != 2)
-    {
-        printf("Argumente incorecte.\n");
-        exit(-1);
+    char *dot = strrchr(filename, '.');
+    if(!dot || dot == filename) 
+        return "";
+    return dot + 1;
+}
 
-    }
-
-    char *filename = argv[1];
+void citire_fisier(char *filename, char *output)
+{
+    if(strcmp("statistica.txt", filename) == 0)
+        return;
     struct stat st_input;
+    int is_bmp = 0;
+    int width;
+    int height;
 
     if(stat(filename, &st_input) == -1)
     {
-        printf("error file");
-        exit(-1);
+        printf("error file\n");
+        return;
     }
 
     if(!S_ISREG(st_input.st_mode))
     {
-        printf("not regular file");
-        exit(-1);
+        printf("not regular file\n");
+        return;
     }
 
-    int file_descriptor;
-    if((file_descriptor = open(filename, O_RDONLY)) == -1)
+    if(strcmp(extensie_fisier(filename), "bmp") == 0)
     {
-        printf("%s\n", strerror(errno));
-        printf("Nu s-a putut deschide fisierul.\n");
-        exit(-1);
-    }
+        is_bmp = 1;
+        int file_descriptor;
+        if((file_descriptor = open(filename, O_RDONLY)) == -1)
+        {
+            printf("Nu s-a putut deschide fisierul.\n");
+            exit(-1);
+        }
 
 
-    lseek(file_descriptor, 16, SEEK_SET);
-    int width;
-    read(file_descriptor, &width, sizeof(int));
-    int height;
-    read(file_descriptor, &height, sizeof(int));
+        lseek(file_descriptor, 16, SEEK_SET);
+        read(file_descriptor, &width, sizeof(int));
+        read(file_descriptor, &height, sizeof(int));
 
-    if(close(file_descriptor)==-1)
-    {
-        printf("error close");
-        exit(1);
+        if(close(file_descriptor)==-1)
+        {
+            printf("error close\n");
+            exit(1);
+        }
     }
 
     char userAccess[4];
@@ -82,13 +75,23 @@ int main(int argc, char *argv[])
     otherAccess[2] = (S_IXOTH == (st_input.st_mode) ? 'x' : '-');
     otherAccess[3] = '\0';
     char finalString[500];
-    sprintf(finalString, "nume fisier : %s\ninaltime : %d\nlatime : %d\ndimensiune : %d\nidentificatorul utilizatorului : %d\n"
-    "timpul ultimei modificari : %s\ncontorul de legaturi : %d\ndrepturi de acces user : %s\ndrepturi de acces grup : %s\n"
-    "drepturi de acces altii : %s\n", filename, height, width, st_input.st_size,  st_input.st_uid, ctime(&st_input.st_ctime),
-    st_input.st_nlink, userAccess, groupAccess, otherAccess);
-
+    if(is_bmp)
+    {
+        sprintf(finalString, "nume fisier : %s\ninaltime : %d\nlatime : %d\ndimensiune : %ld\nidentificatorul utilizatorului : %d\n"
+                "timpul ultimei modificari : %s\ncontorul de legaturi : %ld\ndrepturi de acces user : %s\ndrepturi de acces grup : %s\n"
+                "drepturi de acces altii : %s\n", filename, height, width, st_input.st_size,  st_input.st_uid, ctime(&st_input.st_ctime),
+                st_input.st_nlink, userAccess, groupAccess, otherAccess);
+    }
+    else
+    {
+        sprintf(finalString, "nume fisier : %s\ndimensiune : %ld\nidentificatorul utilizatorului : %d\n"
+                "timpul ultimei modificari : %s\ncontorul de legaturi : %ld\ndrepturi de acces user : %s\ndrepturi de acces grup : %s\n"
+                "drepturi de acces altii : %s\n\n\n", filename, st_input.st_size,  st_input.st_uid, ctime(&st_input.st_ctime),
+                st_input.st_nlink, userAccess, groupAccess, otherAccess);
+    }
+    
     int output_descriptor;
-    if((output_descriptor = open("statistica.txt", O_WRONLY, O_APPEND)))
+    if((output_descriptor = open(output, O_WRONLY | O_APPEND)) == -1)
     {
         printf("Nu s-a putut deschide fisierul.\n");
         exit(-1);
@@ -96,21 +99,41 @@ int main(int argc, char *argv[])
 
     if(write(output_descriptor, finalString, strlen(finalString)) == -1)
     {
-        printf("error write");
+        printf("error write\n");
         exit(1);
     }
 
     if(close(output_descriptor)==-1)
     {
-        printf("error close");
+        printf("error close\n");
         exit(1);
     }
+}
 
-    printf("Succes\n");
+void citire_director(char *director){
+    DIR *dir;
+    dir = opendir(director);
+    struct dirent *entry;
+    struct stat st_file;
+    char str[500];
 
+    while((entry = readdir(dir)) != NULL)
+    {
+        printf("%s\n", entry->d_name);
+        citire_fisier(entry->d_name, "statistica.txt");
+    }
+}
+
+int main(int argc, char *argv[])
+{
+    if(argc != 2)
+    {
+        printf("Argumente incorecte.\n");
+        exit(-1);
+
+    }
+
+    citire_director(argv[1]);
     return 0;
 
-    
-
-    //citire_director(argv[1]);
 }
