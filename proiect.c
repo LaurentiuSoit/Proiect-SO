@@ -134,6 +134,37 @@ int main(int argc, char *argv[])
     }
 
     citire_director(argv[1]);
+    
     return 0;
 
 }
+
+
+/*
+    pid_t pid;
+    int status;
+    for(int j = 0; j < 5; j++)
+    {
+        pid = fork();
+    }
+    if(pid < 0)
+    {
+        printf("error fork\n");
+        exit(-1);
+    }
+    else if(pid == 0)
+    {
+        for(int i = 0; i < 10; i++)
+        {
+            printf("Child with pid =%d printing line%d\n", getpid(), i);
+        }
+        exit(j+1);
+    }
+    while((pid = wait(&status)) != -1)
+    {
+        if(WIFEXITED(status))
+        {
+            printf("pid = %d, status = %d", pid, WEXITSTATUS(status));
+        }
+    }
+*/
