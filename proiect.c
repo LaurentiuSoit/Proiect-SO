@@ -91,7 +91,7 @@ void citire_fisier(char *filename, char *output)
     }
     
     int output_descriptor;
-    if((output_descriptor = open(output, O_WRONLY | O_APPEND)) == -1)
+    if((output_descriptor = open(output, O_WRONLY | O_APPEND | O_CREAT)) == -1)
     {
         printf("Nu s-a putut deschide fisierul.\n");
         exit(-1);
@@ -110,9 +110,9 @@ void citire_fisier(char *filename, char *output)
     }
 }
 
-void citire_director(char *director){
+void citire_director(char *director_input, char *director_output){
     DIR *dir;
-    dir = opendir(director);
+    dir = opendir(director_input);
     struct dirent *entry;
     struct stat st_file;
     char str[500];
@@ -120,7 +120,22 @@ void citire_director(char *director){
     while((entry = readdir(dir)) != NULL)
     {
         printf("%s\n", entry->d_name);
-        citire_fisier(entry->d_name, "statistica.txt");
+        char output_file_name[200];
+        sprintf(output_file_name, "%s\\%s_statistica.txt", director_output, entry->d_name);
+        pid_t pid = fork();
+        if(pid == -1)
+        {
+            printf("Error forking process\n");
+            exit(EXIT_FAILURE);
+        }
+        else if(pid == 0)
+        {
+            citire_fisier(entry->d_name, output_file_name);
+            exit(EXIT_SUCCESS);
+        }
+        {
+
+        }
     }
 }
 
@@ -133,7 +148,7 @@ int main(int argc, char *argv[])
 
     }
 
-    citire_director(argv[1]);
+    citire_director(argv[1], argv[2]);
     
     return 0;
 
