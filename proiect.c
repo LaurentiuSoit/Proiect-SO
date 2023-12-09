@@ -42,13 +42,13 @@ void citire_fisier(char *filename, char *output)
     {
         is_bmp = 1;
         int file_descriptor;
-        if ((file_descriptor = open(filename, O_RDWR)) == -1)
+        if ((file_descriptor = open(filename, O_RDONLY)) == -1)
         {
-            printf("Nu s-a putut citi fisierul.\n");
+            printf("Nu s-a putut deschide fisierul.\n");
             exit(-1);
         }
 
-        lseek(file_descriptor, 18, SEEK_SET);
+        lseek(file_descriptor, 16, SEEK_SET);
         read(file_descriptor, &width, sizeof(int));
         read(file_descriptor, &height, sizeof(int));
 
@@ -112,9 +112,17 @@ void citire_fisier(char *filename, char *output)
     }
 
     int output_descriptor;
-    if ((output_descriptor = open(output, O_CREAT | O_WRONLY | O_APPEND, S_IWUSR)) == -1)
+    char stat_file_name[100];
+    sprintf(stat_file_name, "%s_statistica.txt", filename);
+    if ((output_descriptor = creat(stat_file_name, S_IWUSR)) == -1)
     {
-        printf("Nu s-a putut scrie fisierul.\n");
+        printf("Nu s-a putut creea fisierul.\n");
+        exit(-1);
+    }
+
+    if ((output_descriptor = open(output, O_CREAT | O_TRUNC | O_WRONLY | O_APPEND, S_IWUSR)) == -1)
+    {
+        printf("Nu s-a putut deschide fisierul.\n");
         exit(-1);
     }
 
@@ -136,14 +144,15 @@ void citire_director(char *director_input, char *director_output)
     DIR *dir;
     dir = opendir(director_input);
     struct dirent *entry;
+    int status;
+    pid_t pid;
 
     while ((entry = readdir(dir)) != NULL)
     {
         printf("%s\n", entry->d_name);
-        char output_file_name[600];
+        char output_file_name[500];
         sprintf(output_file_name, "%s\\%s_statistica.txt", director_output, entry->d_name);
-        pid_t pid = fork();
-        int status;
+        pid = fork();
         if (pid == -1)
         {
             printf("Error forking process\n");
@@ -154,14 +163,15 @@ void citire_director(char *director_input, char *director_output)
             citire_fisier(entry->d_name, output_file_name);
             exit(EXIT_SUCCESS);
         }
-        while ((pid = wait(&status)) != -1)
+    }
+    while (wait(&status) >= 0)
+    {
+        if (WIFEXITED(status))
         {
-            if (WIFEXITED(status))
-            {
-                printf("pid = %d, status = %d\n", pid, WEXITSTATUS(status));
-            }
+            printf("S-a incheiat procesul cu pid-ul %d si codul %d\n", pid, WEXITSTATUS(status));
         }
     }
+    closedir(dir);
 }
 
 int main(int argc, char *argv[])
@@ -176,32 +186,3 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-
-/*
-    pid_t pid;
-    int status;
-    for(int j = 0; j < 5; j++)
-    {
-        pid = fork();
-    }
-    if(pid < 0)
-    {
-        printf("error fork\n");
-        exit(-1);
-    }
-    else if(pid == 0)
-    {
-        for(int i = 0; i < 10; i++)
-        {
-            printf("Child with pid =%d printing line%d\n", getpid(), i);
-        }
-        exit(j+1);
-    }
-    while((pid = wait(&status)) != -1)
-    {
-        if(WIFEXITED(status))
-        {
-            printf("pid = %d, status = %d", pid, WEXITSTATUS(status));
-        }
-    }
-*/
